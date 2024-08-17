@@ -1,11 +1,13 @@
-from tkinter import *
-from tkinter import filedialog
+from tkinter import Button, PhotoImage, filedialog
 import simpleaudio as sa
 
-tk = Tk()
-
 class imageButton:
-    def __init__(self, function, filePath):
-        buttonTest = PhotoImage(file=filePath)
-        button = Button(tk, image=buttonTest, command= lambda : function, borderwidth=0)
+    def __init__(self):
+        pass
+    
+    def makeButton(self, function, filePath, screen):
+        self.image = PhotoImage(file=filePath)
+        button = Button(screen, image=self.image, command=function, borderwidth=0)
         button.pack(pady=30)
+        return button
+

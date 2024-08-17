@@ -4,6 +4,7 @@ from tkinter import filedialog
 import simpleaudio as sa
 import pygame.mixer
 import ctypes
+from ui.ui_elements import *
 
 def main():
     # tk screen stuff
@@ -31,10 +32,17 @@ def main():
     menu.add_cascade(label='Edit', menu=editmenu)
     editmenu.add_command(label='Exit', command=tk.quit)
 
-    # image button
-    buttonTest = PhotoImage(file='assets/rewind.png')
-    button = Button(tk, image=buttonTest, command= lambda : print('test'), borderwidth=0)
-    button.pack(pady=30)
+    file_path = filedialog.askopenfilename()
+    print(file_path)
+
+    #buttonTest = PhotoImage(file='assets/rewind.png')
+    #button= Button(tk, image=buttonTest, command= lambda : print('test'), borderwidth=0)
+    #button.pack(pady=30)
+
+    buttonTest = imageButton()
+    buttonTest.makeButton(lambda: print('gulp'), file_path, tk)
+
+    #tk.protocol("WM_DELETE_WINDOW", quitProgram())
 
     # tk mainloop
     tk.mainloop()
@@ -50,7 +58,6 @@ def addSong():
     except:
         ctypes.windll.user32.MessageBoxW(0, u"Please text a valid audio file!", u"", 16)
         print('uh oh')
-
 
 if __name__ == "__main__": # python boilerplate. hooray!
     main()
