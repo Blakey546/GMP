@@ -1,10 +1,14 @@
 # imports
 from tkinter import *
 from tkinter import filedialog
+from ui.ui_elements import *
+from tinytag import TinyTag
+from PIL import Image as pilImage
+
 import simpleaudio as sa
 import pygame.mixer
 import ctypes
-from ui.ui_elements import *
+import io
 
 def main():
     # tk screen stuff
@@ -24,7 +28,7 @@ def main():
     
     # file menu
     menu.add_cascade(label='File', menu=filemenu)
-    filemenu.add_command(label='Add Song', command= lambda : addSong())
+    filemenu.add_command(label='Add Song', command= lambda : addSong(tk))
     filemenu.add_separator()
     filemenu.add_command(label='Exit', command=tk.quit)
 
@@ -33,7 +37,6 @@ def main():
     editmenu.add_command(label='Exit', command=tk.quit)
 
     file_path = filedialog.askopenfilename()
-    print(file_path)
 
     #buttonTest = PhotoImage(file='assets/rewind.png')
     #button= Button(tk, image=buttonTest, command= lambda : print('test'), borderwidth=0)
@@ -42,22 +45,42 @@ def main():
     buttonTest = imageButton()
     buttonTest.makeButton(lambda: print('gulp'), file_path, tk)
 
-    #tk.protocol("WM_DELETE_WINDOW", quitProgram())
-
     # tk mainloop
     tk.mainloop()
 
 
-def addSong():
+def addSong(screen):
+    # ask for file
+    fileMenu = Toplevel(screen)
     file_path = filedialog.askopenfilename()
-    print(file_path)
+    # make a button i don't need this but i'm keeping it for debug
+    #buttonTest2 = imageButton()
+    #buttonTest2.makeButton(lambda: fileMenu.quit(), file_path, fileMenu)
+    #file_path = filedialog.askopenfilename()
     
+    # get song metadata (image)
+    tag = TinyTag.get(file_path, image=True)
+    image_data = tag.get_image()
+
+    # make + save image
+    pi = pilImage.open(io.BytesIO(image_data))
+    pi.save('temp/tempCover.png')
+    
+    albumCover = Image()
+    albumCover.makeImageWithPath('temp/tempCover.png', fileMenu)
+
+    fileMenu.mainloop()
+    # !!! DELETE TEMP COVER !!!
+    fileMenu.destroy()
+
     try:
         sound = pygame.mixer.Sound(file_path)
         sound.play()
     except:
         ctypes.windll.user32.MessageBoxW(0, u"Please text a valid audio file!", u"", 16)
         print('uh oh')
+    
+
 
 if __name__ == "__main__": # python boilerplate. hooray!
     main()
